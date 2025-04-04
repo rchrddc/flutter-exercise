@@ -1,24 +1,28 @@
-import 'package:flutter/material.dart';
-import '../../../domain/models/user.dart';
+// import 'package:flutter/material.dart';
+// import '../../../domain/models/user.dart';
+// import 'custom_card.dart';
 
-class UserCard extends StatelessWidget {
-  final User user;
-  final VoidCallback onTap;
+// class UserCard extends StatelessWidget {
+//   final User user;
+//   final VoidCallback onTap;
+//   final VoidCallback onDelete;
 
-  UserCard({required this.user, required this.onTap});
+//   const UserCard({
+//     Key? key,
+//     required this.user,
+//     required this.onTap,
+//     required this.onDelete,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(user.avatar),
-        ),
-        title: Text("${user.firstName} ${user.lastName}"),
-        subtitle: Text(user.email),
-        onTap: onTap,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomCard(
+//       imageUrl: user.avatar,
+//       title: "${user.firstName} ${user.lastName}",
+//       subtitle: user.email,
+//       description:
+//           "Test text for the user card. This is a placeholder description.",
+//       onTap: onTap,
+//     );
+//   }
+// }

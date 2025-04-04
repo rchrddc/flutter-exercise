@@ -4,7 +4,7 @@ import '../../../domain/models/user.dart';
 class UserDetailScreen extends StatelessWidget {
   final User user;
 
-  UserDetailScreen({required this.user});
+  const UserDetailScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
