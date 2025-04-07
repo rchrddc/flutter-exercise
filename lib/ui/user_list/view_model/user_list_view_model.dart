@@ -22,4 +22,17 @@ class UserListViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void addUser(User user) {
+    users.add(user);
+    notifyListeners();
+  }
+
+  void updateUser(User updatedUser) {
+    final index = users.indexWhere((user) => user.id == updatedUser.id);
+    if (index != -1) {
+      users[index] = updatedUser;
+      notifyListeners();
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../view_model/user_list_view_model.dart';
 import 'custom_card.dart';
 import 'user_detail_screen.dart';
+import 'user_form_screen.dart';
 
 class UserListScreen extends StatelessWidget {
   const UserListScreen({super.key});
@@ -21,7 +22,7 @@ class UserListScreen extends StatelessWidget {
                 crossAxisCount: 2, // Two columns
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.8, // Adjust to fit design
+                childAspectRatio: 0.8,
               ),
               itemCount: viewModel.users.length,
               itemBuilder: (context, index) {
@@ -41,6 +42,24 @@ class UserListScreen extends StatelessWidget {
                 );
               },
             ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => UserFormScreen(), // null = create mode
+            ),
+          );
+        },
+        tooltip: 'Add User',
+        backgroundColor: Colors.blue[700],
+        shape: CircleBorder(),
+        child: Icon(Icons.add,
+          size: 30,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

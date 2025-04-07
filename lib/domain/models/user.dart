@@ -1,5 +1,5 @@
 class User {
-  final int id;
+  final String id;
   final String email;
   final String firstName;
   final String lastName;
@@ -13,10 +13,9 @@ class User {
     required this.avatar,
   });
 
-  // Factory constructor to create a User from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
+      id: json['id'].toString(),
       email: json['email'],
       firstName: json['first_name'],
       lastName: json['last_name'],

@@ -6,8 +6,10 @@ class UserApiModel {
   UserApiModel({required this.users});
 
   factory UserApiModel.fromJson(Map<String, dynamic> json) {
-    var usersJson = json['data'] as List;
-    List<User> usersList = usersJson.map((user) => User.fromJson(user)).toList();
-    return UserApiModel(users: usersList);
+    return UserApiModel(
+      users: (json['data'] as List)
+          .map((userJson) => User.fromJson(userJson))
+          .toList(),
+    );
   }
 }
