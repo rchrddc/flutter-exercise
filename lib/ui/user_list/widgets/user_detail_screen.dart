@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../domain/models/user.dart';
+import '../view_model/user_list_view_model.dart';
 import 'user_form_screen.dart';
 
 class UserDetailScreen extends StatefulWidget {
@@ -17,7 +19,12 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   @override
   void initState() {
     super.initState();
-    user = widget.user; // Initialize the user
+    user = widget.user;
+  }
+
+  void _deleteUser(BuildContext context) {
+    Provider.of<UserListViewModel>(context, listen: false).deleteUser(user.id);
+    Navigator.pop(context); // Pop this screen
   }
 
   @override
@@ -29,7 +36,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () async {
-              // Navigate to the UserFormScreen for editing
               final updatedUser = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -39,10 +45,14 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
               if (updatedUser != null) {
                 setState(() {
-                  user = updatedUser; // Update the user data after editing
+                  user = updatedUser;
                 });
               }
             },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _deleteUser(context), // 🗑 Delete button
           ),
         ],
       ),

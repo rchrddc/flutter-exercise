@@ -28,6 +28,11 @@ class UserListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteUser(String id) {
+  users.removeWhere((user) => user.id == id);
+  notifyListeners();
+}
+
   void updateUser(User updatedUser) {
     final index = users.indexWhere((user) => user.id == updatedUser.id);
     if (index != -1) {

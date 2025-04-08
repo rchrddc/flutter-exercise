@@ -27,7 +27,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+
+        // 👇 Customize cursor, selection, and handle colors
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.blue[900],
+          selectionColor: Colors.blue.withOpacity(0.3),
+          selectionHandleColor: Colors.blue[900],
+        ),
+      ),
       home: const UserListScreen(),
     );
   }

@@ -31,13 +31,6 @@ class CustomCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                offset: Offset(0, 4), // Shadow offset
-                blurRadius: 6, // Blur radius for smooth shadow
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

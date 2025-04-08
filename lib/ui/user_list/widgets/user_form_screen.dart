@@ -23,11 +23,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
   @override
   void initState() {
     super.initState();
-    // If editing, populate with existing data
     _firstNameController = TextEditingController(text: widget.user?.firstName ?? '');
     _lastNameController = TextEditingController(text: widget.user?.lastName ?? '');
     _emailController = TextEditingController(text: widget.user?.email ?? '');
-    _avatarController = TextEditingController(text: widget.user?.avatar ?? '');
+    
+    _avatarController = TextEditingController(text: widget.user?.avatar ?? 'assets/images/default_avatar.png');
   }
 
   @override
@@ -39,29 +39,28 @@ class _UserFormScreenState extends State<UserFormScreen> {
     super.dispose();
   }
 
-void _saveUser() {
-  if (_formKey.currentState!.validate()) {
-    final viewModel = Provider.of<UserListViewModel>(context, listen: false);
+  void _saveUser() {
+    if (_formKey.currentState!.validate()) {
+      final viewModel = Provider.of<UserListViewModel>(context, listen: false);
 
-    final newUser = User(
-      id: widget.user?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      email: _emailController.text,
-      avatar: _avatarController.text,
-    );
+      final newUser = User(
+        id: widget.user?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        email: _emailController.text,
+        avatar: _avatarController.text, // Avatar from the form field
+      );
 
-    if (widget.user == null) {
-      viewModel.addUser(newUser); // Add new user
-    } else {
-      viewModel.updateUser(newUser); // Update existing user
+      if (widget.user == null) {
+        viewModel.addUser(newUser); // Add new user
+      } else {
+        viewModel.updateUser(newUser); // Update existing user
+      }
+
+      // Return the updated user back to the previous screen
+      Navigator.pop(context, newUser); // Pass the updated user
     }
-
-    // Return the updated user back to the previous screen
-    Navigator.pop(context, newUser); // Pass the updated user
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +82,28 @@ void _saveUser() {
                 _buildEmailField("Email", _emailController),
                 _buildTextField("Avatar URL", _avatarController),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _saveUser,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[700], // Material 3 color
+                Row(children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context), // Cancel button
+                      child: Text('Cancel',
+                      style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
-                  child: Text(isEditing ? 'Update User' : 'Create User',
-                    style: TextStyle(color: Colors.white), // Text color
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _saveUser, // Save button
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[700],
+                      ),
+                      child: Text(isEditing ? 'Update' : 'Create',
+                      style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
+                ],)
               ],
             ),
           ),
@@ -100,7 +112,6 @@ void _saveUser() {
     );
   }
 
-  // Updated _buildTextField method with Material 3 style
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -108,18 +119,21 @@ void _saveUser() {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          floatingLabelBehavior: FloatingLabelBehavior.auto, // Material 3 behavior
-          hintText: 'Enter $label', // Hint text that shows in the field
-          helperText: 'Required Field *', // Supporting text below the field
-          helperStyle: TextStyle(color: Colors.grey[600]), // Style for helper text
-          border: OutlineInputBorder(), // Default border for text fields
+          labelStyle: TextStyle(color: Colors.grey[600]),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          hintText: 'Enter $label',
+          helperText: 'Required Field *',
+          helperStyle: TextStyle(color: Colors.grey[600]),
+          border: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          ),
         ),
         validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
       ),
     );
   }
 
-  // Updated email field with email validation and Material 3 style
   Widget _buildEmailField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -127,11 +141,15 @@ void _saveUser() {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          floatingLabelBehavior: FloatingLabelBehavior.auto, // Floating label behavior
-          hintText: 'Enter your email', // Hint text
-          helperText: 'Required Field *', // Helper text
-          helperStyle: TextStyle(color: Colors.grey[600]), // Helper text style
+          labelStyle: TextStyle(color: Colors.grey[600]),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          hintText: 'Enter your email',
+          helperText: 'Required Field *',
+          helperStyle: TextStyle(color: Colors.grey[600]),
           border: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          ),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
