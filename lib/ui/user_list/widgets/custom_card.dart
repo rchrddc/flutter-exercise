@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl; // Allow null for imageUrl
   final String title;
   final String subtitle;
   final VoidCallback onTap;
 
   const CustomCard({
     super.key,
-    required this.imageUrl,
+    this.imageUrl, // Make imageUrl optional
     required this.title,
     required this.subtitle,
     required this.onTap,
@@ -37,17 +37,25 @@ class CustomCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(
-                  imageUrl,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 120,
-                    color: Colors.grey[300],
-                    child: Icon(Icons.image, size: 50, color: Colors.grey[600]),
-                  ),
-                ),
+                child: imageUrl != null && imageUrl!.isNotEmpty
+                    ? Image.network(
+                        imageUrl!,
+                        height: 120,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                          'assets/images/default_avatar.png', // Default avatar path
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Image.asset(
+                        'assets/images/default_avatar.png', // Default avatar path
+                        height: 120,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
