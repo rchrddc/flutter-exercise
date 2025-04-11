@@ -12,18 +12,60 @@ class UserListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserListViewModel>(context);
 
+    // Filters
+    final allUsers = viewModel.users;
+    final activeUsers = allUsers.where((user) => user.isActive).toList();
+    final inactiveUsers = allUsers.where((user) => !user.isActive).toList();
+
+    Widget buildUserGrid(List users) {
+      if (viewModel.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (users.isEmpty) {
+        return const Center(child: Text('No Users Found'));
+      }
+
+      return GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.8,
+        ),
+        itemCount: users.length,
+        itemBuilder: (context, index) {
+          final user = users[index];
+          return CustomCard(
+            imageUrl: user.avatar,
+            title: "${user.firstName} ${user.lastName}",
+            subtitle: user.email,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserDetailScreen(user: user),
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+
     return DefaultTabController(
-      length: 3, // Number of tabs
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('User List'),
+          title: const Text('User List'),
           bottom: TabBar.secondary(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
-            indicator: UnderlineTabIndicator(
+            indicator: const UnderlineTabIndicator(
               borderSide: BorderSide(width: 4.0, color: Colors.white),
             ),
-            tabs: [
+            tabs: const [
               Tab(text: 'All Users'),
               Tab(text: 'Active'),
               Tab(text: 'Inactive'),
@@ -32,36 +74,9 @@ class UserListScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            viewModel.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : GridView.builder(
-                    padding: EdgeInsets.all(12),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemCount: viewModel.users.length,
-                    itemBuilder: (context, index) {
-                      final user = viewModel.users[index];
-                      return CustomCard(
-                        imageUrl: user.avatar,
-                        title: "${user.firstName} ${user.lastName}",
-                        subtitle: user.email,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserDetailScreen(user: user),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-            Center(child: Text('No Active Users Found')), // Placeholder for Active Users
-            Center(child: Text('No Inactive Users Found')), // Placeholder for Inactive Users
+            buildUserGrid(allUsers),
+            buildUserGrid(activeUsers),
+            buildUserGrid(inactiveUsers),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -69,14 +84,14 @@ class UserListScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => UserFormScreen(), // null = create mode
+                builder: (_) => const UserFormScreen(),
               ),
             );
           },
           tooltip: 'Add User',
           backgroundColor: Colors.blue[900],
-          shape: CircleBorder(),
-          child: Icon(
+          shape: const CircleBorder(),
+          child: const Icon(
             Icons.add,
             size: 30,
             color: Colors.white,

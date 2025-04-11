@@ -19,6 +19,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
   late TextEditingController _lastNameController;
   late TextEditingController _emailController;
   late TextEditingController _avatarController;
+  late bool _isActive;
 
   @override
   void initState() {
@@ -26,8 +27,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
     _firstNameController = TextEditingController(text: widget.user?.firstName ?? '');
     _lastNameController = TextEditingController(text: widget.user?.lastName ?? '');
     _emailController = TextEditingController(text: widget.user?.email ?? '');
-    
     _avatarController = TextEditingController(text: widget.user?.avatar ?? 'assets/images/default_avatar.png');
+    _isActive = widget.user?.isActive ?? true;
   }
 
   @override
@@ -48,17 +49,17 @@ class _UserFormScreenState extends State<UserFormScreen> {
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         email: _emailController.text,
-        avatar: _avatarController.text, // Avatar from the form field
+        avatar: _avatarController.text,
+        isActive: _isActive,
       );
 
       if (widget.user == null) {
-        viewModel.addUser(newUser); // Add new user
+        viewModel.addUser(newUser);
       } else {
-        viewModel.updateUser(newUser); // Update existing user
+        viewModel.updateUser(newUser);
       }
 
-      // Return the updated user back to the previous screen
-      Navigator.pop(context, newUser); // Pass the updated user
+      Navigator.pop(context, newUser);
     }
   }
 
@@ -81,29 +82,47 @@ class _UserFormScreenState extends State<UserFormScreen> {
                 _buildTextField("Last Name", _lastNameController),
                 _buildEmailField("Email", _emailController),
                 _buildTextField("Avatar URL", _avatarController),
+
+                Row(
+                  children: [
+                    Switch(
+                      value: _isActive,
+                      onChanged: (val) => setState(() => _isActive = val),
+                      activeColor: Colors.blue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text('Active'),
+                  ],
+                ),
+
                 const SizedBox(height: 20),
-                Row(children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context), // Cancel button
-                      child: Text('Cancel',
-                      style: TextStyle(color: Colors.black),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.grey),
+                        ),
+                        child: Text('Cancel', style: TextStyle(color: Colors.black)),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _saveUser, // Save button
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[700],
-                      ),
-                      child: Text(isEditing ? 'Update' : 'Create',
-                      style: TextStyle(color: Colors.white),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _saveUser,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[700],
+                        ),
+                        child: Text(
+                          isEditing ? 'Update' : 'Create',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
-                ],)
+                  ],
+                ),
               ],
             ),
           ),
@@ -117,6 +136,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextFormField(
         controller: controller,
+        cursorColor: Colors.blue,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey[600]),
@@ -139,6 +159,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextFormField(
         controller: controller,
+        cursorColor: Colors.blue,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey[600]),
@@ -152,16 +173,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
           ),
         ),
         validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Required field';
-          }
-          // Email regex pattern
-          String pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-          RegExp regex = RegExp(pattern);
-          if (!regex.hasMatch(value)) {
-            return 'Please enter a valid email';
-          }
-          return null; // Valid email
+          if (value == null || value.isEmpty) return 'Required field';
+          final regex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+          if (!regex.hasMatch(value)) return 'Please enter a valid email';
+          return null;
         },
       ),
     );
