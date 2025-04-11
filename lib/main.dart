@@ -30,11 +30,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
 
-        // 👇 Customize cursor, selection, and handle colors
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.blue[900],
           selectionColor: Colors.blue.withOpacity(0.3),
           selectionHandleColor: Colors.blue[900],
+        ),
+
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue[900],
+          foregroundColor: Colors.white,
         ),
       ),
       home: const UserListScreen(),
